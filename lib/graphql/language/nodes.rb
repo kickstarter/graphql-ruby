@@ -31,7 +31,7 @@ module GraphQL
 
           @filename = options.delete(:filename)
 
-          initialize_node(options)
+          initialize_node(**options)
         end
 
         # This is called with node-specific options

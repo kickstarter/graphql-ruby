@@ -74,7 +74,7 @@ module GraphQL
         # @return [Class<GraphQL::Arguments>]
         attr_accessor :arguments_class
 
-        def argument(*args)
+        def argument(*args, **kwargs)
           argument_defn = super
           # Add a method access
           arg_name = argument_defn.graphql_definition.name
