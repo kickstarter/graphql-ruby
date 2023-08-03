@@ -38,7 +38,7 @@ module GraphQL
       end
 
       def tracer
-        options.fetch(:tracer, Datadog.tracer)
+        options.fetch(:tracer, Datadog::Tracing)
       end
 
       def platform_field_key(type, field)
