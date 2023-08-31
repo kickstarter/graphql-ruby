@@ -43,7 +43,7 @@ module GraphQL
       end
 
       def tracer
-        options.fetch(:tracer, Datadog.tracer)
+        options.fetch(:tracer, Datadog::Tracing)
       end
 
       def analytics_available?
