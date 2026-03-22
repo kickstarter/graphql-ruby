@@ -7,20 +7,22 @@ module GraphQL
       def commentize(description, indent: '')
         lines = description.split("\n")
 
-        comment = ''.dup
+        block_str = "".dup
+        block_str << "#{indent}\"\"\"\n"
 
         lines.each do |line|
           if line == ''
-            comment << "#{indent}#\n"
+            block_str << "\n"
           else
             sublines = break_line(line, 120 - indent.length)
             sublines.each do |subline|
-              comment << "#{indent}# #{subline}\n"
+              block_str << "#{indent}#{subline}\n"
             end
           end
         end
 
-        comment
+        block_str << "#{indent}\"\"\"\n"
+        block_str
       end
 
       private
