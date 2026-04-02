@@ -114,6 +114,7 @@ module GraphQL
       # @param deprecation_reason [String] If present, the field is marked "deprecated" with this message
       # @param method [Symbol] The method to call to resolve this field (defaults to `name`)
       # @param hash_key [Object] The hash key to lookup to resolve this field (defaults to `name` or `name.to_s`)
+      # @param resolver_method [Symbol] Alias for `method:` for forward compatibility with newer GraphQL-Ruby versions
       # @param connection [Boolean] `true` if this field should get automagic connection behavior; default is to infer by `*Connection` in the return type name
       # @param max_page_size [Integer] For connections, the maximum number of items to return from this field
       # @param introspection [Boolean] If true, this field will be marked as `#introspection?` and the name may begin with `__`
@@ -126,7 +127,7 @@ module GraphQL
       # @param complexity [Numeric] When provided, set the complexity for this field
       # @param scope [Boolean] If true, the return type's `.scope_items` method will be called on the return value
       # @param subscription_scope [Symbol, String] A key in `context` which will be used to scope subscription payloads
-      def initialize(type: nil, name: nil, owner: nil, null: nil, field: nil, function: nil, description: nil, deprecation_reason: nil, method: nil, connection: nil, max_page_size: nil, scope: nil, resolve: nil, introspection: false, hash_key: nil, camelize: true, trace: nil, complexity: 1, extras: [], resolver_class: nil, subscription_scope: nil, arguments: {}, &definition_block)
+      def initialize(type: nil, name: nil, owner: nil, null: nil, field: nil, function: nil, description: nil, deprecation_reason: nil, method: nil, resolver_method: nil, connection: nil, max_page_size: nil, scope: nil, resolve: nil, introspection: false, hash_key: nil, camelize: true, trace: nil, complexity: 1, extras: [], resolver_class: nil, subscription_scope: nil, arguments: {}, &definition_block)
 
         if name.nil?
           raise ArgumentError, "missing first `name` argument or keyword `name:`"
@@ -155,9 +156,17 @@ module GraphQL
         if method && hash_key
           raise ArgumentError, "Provide `method:` _or_ `hash_key:`, not both. (called with: `method: #{method.inspect}, hash_key: #{hash_key.inspect}`)"
         end
+        if resolver_method
+          if method
+            raise ArgumentError, "Provide `method:` _or_ `resolver_method:`, not both. (called with: `method: #{method.inspect}, resolver_method: #{resolver_method.inspect}`)"
+          end
+          if hash_key
+            raise ArgumentError, "Provide `hash_key:` _or_ `resolver_method:`, not both. (called with: `hash_key: #{hash_key.inspect}, resolver_method: #{resolver_method.inspect}`)"
+          end
+        end
 
         # TODO: I think non-string/symbol hash keys are wrongly normalized (eg `1` will not work)
-        method_name = method || hash_key || Member::BuildType.underscore(name.to_s)
+        method_name = method || resolver_method || hash_key || Member::BuildType.underscore(name.to_s)
 
         @method_str = method_name.to_s
         @method_sym = method_name.to_sym

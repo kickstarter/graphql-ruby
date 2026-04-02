@@ -53,6 +53,35 @@ describe GraphQL::Schema::Field do
       assert_equal "tt", object.fields["t"].method_str
     end
 
+    it "accepts resolver_method as a forward-compatible alias for method" do
+      object = Class.new(Jazz::BaseObject) do
+        field :t, String, resolver_method: :tt, null: true
+      end
+      assert_equal :tt, object.fields["t"].method_sym
+      assert_equal "tt", object.fields["t"].method_str
+    end
+
+    it "raises when method and resolver_method are both provided" do
+      err = assert_raises ArgumentError do
+        Class.new(Jazz::BaseObject) do
+          field :t, String, method: :tt, resolver_method: :ttt, null: true
+        end
+      end
+
+      assert_equal "Provide `method:` _or_ `resolver_method:`, not both. (called with: `method: :tt, resolver_method: :ttt`)", err.message
+    end
+
+    it "raises when hash_key and resolver_method are both provided" do
+      err = assert_raises ArgumentError do
+        Class.new(Jazz::BaseObject) do
+          field :t, String, hash_key: :tt, resolver_method: :ttt, null: true
+        end
+      end
+
+      assert_equal "Provide `hash_key:` _or_ `resolver_method:`, not both. (called with: `hash_key: :tt, resolver_method: :ttt`)", err.message
+    end
+
+
     it "accepts a block for definition" do
       object = Class.new(Jazz::BaseObject) do
         graphql_name "JustAName"
