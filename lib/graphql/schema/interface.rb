@@ -65,8 +65,7 @@ module GraphQL
             end
           elsif child_class < GraphQL::Schema::Object
             called_from_implements = caller_locations(0, 10).any? do |location|
-              location.path&.include?("/graphql/schema/object.rb") &&
-                location.label == "implements"
+              location.path&.include?("/graphql/schema/object.rb")
             end
 
             unless called_from_implements
