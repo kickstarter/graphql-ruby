@@ -44,7 +44,11 @@ module GraphQL
       # @param mutation [Class] A {GraphQL::Schema::Mutation} class to use for field configuration
       # @return [GraphQL::Schema:Field] an instance of `self
       # @see {.initialize} for other options
-      def self.from_options(name = nil, type = nil, desc = nil, resolver: nil, mutation: nil, **kwargs, &block)
+      def self.from_options(name = nil, type = nil, desc = nil, options = nil, resolver: nil, mutation: nil, **kwargs, &block)
+        if options
+          kwargs = options.merge(kwargs)
+        end
+
         if (parent_config = resolver || mutation)
           # Get the parent config, merge in local overrides
           kwargs = parent_config.field_options.merge(kwargs)
