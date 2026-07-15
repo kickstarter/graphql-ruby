@@ -65,7 +65,7 @@ module GraphQL
             end
           elsif child_class < GraphQL::Schema::Object
             # This is being included into an object type, make sure it's using `implements(...)`
-            backtrace_line = caller(0, 10).find { |line| line.include?("schema/object.rb") && line.include?("in `implements'")}
+            backtrace_line = caller(0, 10).find { |line| line.match?(%r{schema/object\.rb.*implements|implements.*schema/object\.rb}) }
             if !backtrace_line
               raise "Attach interfaces using `implements(#{self})`, not `include(#{self})`"
             end
