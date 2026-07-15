@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'ostruct'
+
 module GraphQL
   module Compatibility
     module ExecutionSpecification
