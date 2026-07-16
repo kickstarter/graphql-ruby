@@ -32,11 +32,5 @@ module GraphQL
         to_non_null_type
       end
     end
-
-    TYPE_CLASSES.each do |type_class|
-      refine type_class.singleton_class do
-        include Methods
-      end
-    end
   end
 end
